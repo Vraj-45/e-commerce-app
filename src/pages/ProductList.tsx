@@ -34,8 +34,8 @@ export default function ProductList() {
       <div className="flex justify-between items-center mb-4">
         <Filters
           value={filters.search}
-          onSearch={(val) => dispatch(setFilters({ search: val }))}
-          onCategory={(cat) => dispatch(setFilters({ category: cat }))}
+          onSearch={(val) => dispatch(setFilters({ search: val || undefined }))}
+          onCategory={(cat) => dispatch(setFilters({ category: cat || undefined }))}
         />
         {isFetching && <div className="text-sm">Updating…</div>}
       </div>
@@ -45,7 +45,6 @@ export default function ProductList() {
           <ProductCard key={p.id} product={p} />
         ))}
       </div>
-
       <Pagination
         current={page}
         total={total}

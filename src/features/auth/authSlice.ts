@@ -1,6 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-import type{ PayloadAction } from "@reduxjs/toolkit";
-import type { User } from "./types";
+import type { PayloadAction } from "@reduxjs/toolkit";
+
+type User = {
+  username: string;
+  password?: string;
+};
 
 type AuthState = {
   user: User | null;
@@ -22,22 +26,25 @@ const authSlice = createSlice({
       localStorage.setItem("user", JSON.stringify(action.payload.user));
       localStorage.setItem("token", action.payload.token);
     },
+    updateProfile(state, action: PayloadAction<Partial<User>>) {
+      if (!state.user) return;
+      state.user = { ...state.user, ...action.payload };
+      localStorage.setItem("user", JSON.stringify(state.user));
+    },
+    changePassword(state, action: PayloadAction<string>) {
+      if (!state.user) return;
+      state.user.password = action.payload;
+      localStorage.setItem("user", JSON.stringify(state.user));
+    },
     logout(state) {
       state.user = null;
       state.token = null;
       localStorage.removeItem("user");
       localStorage.removeItem("token");
     },
-    updateProfile(state, action: PayloadAction<Partial<User>>) {
-      if (!state.user) return;
-      state.user = { ...state.user, ...action.payload };
-      localStorage.setItem("user", JSON.stringify(state.user));
-    },
-    changePassword(state) {
-      // For demo-only: password change handled client-side (no real backend)
-    }
   },
 });
 
-export const { loginSuccess, logout, updateProfile, changePassword } = authSlice.actions;
+export const { loginSuccess, updateProfile, changePassword, logout } = authSlice.actions;
 export default authSlice.reducer;
+export type { User };
